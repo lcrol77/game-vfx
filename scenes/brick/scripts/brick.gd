@@ -3,6 +3,9 @@ extends StaticBody2D
 signal energy_brick_destroyed()
 signal destroyed(which)
 
+@export var brick_explosion: PackedScene = preload("res://scenes/brick/brick_explode_particles.tscn")
+@export var bomb_explosion: PackedScene = preload("res://scenes/brick/bomb_explode_particles.tscn")
+
 @export var long_full: CompressedTexture2D = preload("res://scenes/brick/visuals/BlockLongFull.png")
 @export var long_border: CompressedTexture2D = preload("res://scenes/brick/visuals/BlockLongBorder.png")
 @export var small_full: CompressedTexture2D = preload("res://scenes/brick/visuals/BlockSmallFull.png")
@@ -42,8 +45,10 @@ var health_dict = {
 @onready var explosion_area: Area2D = $ExplosionArea
 @onready var size_sprite: Sprite2D = $Size
 @onready var type_sprite: Sprite2D = $Type
+@onready var animation_player = $AnimationPlayer
 
 var _destroyed: bool = false
+var bounce_tween: Tween
 
 func _ready() -> void:
 	choose_type_random()
@@ -107,6 +112,29 @@ func update_type_visuals() -> void:
 		TYPE.ENERGY:
 			type_sprite.texture = energy
 
+func bounce() -> void:
+	if bounce_tween and bounce_tween.is_running():
+		bounce_tween.kill()
+	bounce_tween = create_tween()
+	bounce_tween.tween_property(size_sprite, "scale", Vector2(1.15, 1.15), 0.15) \
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	bounce_tween.parallel().tween_property(size_sprite, "rotation_degrees", randf_range(-10.0, 10.0), 0.15) \
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	bounce_tween.tween_property(size_sprite, "scale", Vector2.ONE, 0.2) \
+				.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	bounce_tween.parallel().tween_property(size_sprite, "rotation_degrees", 0.0, 0.2) \
+				.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	
+func spawn_brick_explosion() -> void:
+	var instance = brick_explosion.instantiate()
+	get_tree().get_current_scene().add_child(instance)
+	instance.global_position = global_position
+	
+func spawn_bomb_explosion() -> void:
+	var instance = bomb_explosion.instantiate()
+	get_tree().get_current_scene().add_child(instance)
+	instance.global_position = global_position
+	
 func damage(value: int) -> void:
 	health -= value
 	
@@ -118,7 +146,8 @@ func damage(value: int) -> void:
 			TYPE.ENERGY:
 				give_energy()
 		destroy()
-	
+		
+	bounce()
 	update_type_health()
 
 func update_type_health() -> void:
@@ -135,6 +164,9 @@ func give_energy() -> void:
 	emit_signal("energy_brick_destroyed")
 
 func explode() -> void:
+	$Explode.play()
+	$Explode/Explode2.play()
+	spawn_bomb_explosion()
 	var bodies = explosion_area.get_overlapping_bodies()
 	for body in bodies:
 		if body._destroyed: continue
@@ -144,5 +176,18 @@ func explode() -> void:
 		body.damage(10)
 
 func destroy() -> void:
+	if type != TYPE.EXPLOSIVE:
+		$Destroy.play()
+	spawn_brick_explosion()
+	visible = false
+	$CollisionShapeLong.set_deferred("disabled", true)
+	$CollisionShapeSmall.set_deferred("disabled", true)
 	emit_signal("destroyed", self)
+
+func _on_animation_player_animation_finished(anim_name):
+	if anim_name == "appear":
+		if type == TYPE.ENERGY or type == TYPE.EXPLOSIVE:
+			animation_player.play("wiggle")
+
+func _on_audio_finished() -> void:
 	queue_free()
