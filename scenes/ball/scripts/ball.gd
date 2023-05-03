@@ -180,6 +180,7 @@ func _physics_process(delta: float) -> void:
 #### VISUALS ####
 func appear() -> void:
 	animation_player.play("RESET")
+	await animation_player.animation_finished
 	animation_player.play("appear")
 	
 func die() -> void:
