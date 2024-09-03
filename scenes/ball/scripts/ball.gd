@@ -4,6 +4,7 @@ signal hit_block(block)
 
 @export var bump_timing_scene: PackedScene = preload("res://scenes/effects/bump/bump_timing.tscn")
 @export var bounce_particles_scene: PackedScene = preload("res://scenes/ball/bounce_particles.tscn")
+@export var bump_particles_scene: PackedScene = preload("res://scenes/ball/bump_particles.tscn")
 
 @export var speed: float = 400.0
 @export var accel: float = 20.0
@@ -73,6 +74,7 @@ func _physics_process(delta: float) -> void:
 		frames_since_paddle_collison = 0
 #		print("Normal:", normal)
 #		print("Dot:", normal.dot(Vector2.UP))
+		spawn_bump_particles(collision.get_position(), normal)
 		
 		# Collision from the top, most of the cases
 		if normal.dot(Vector2.UP) > 0.0:
@@ -139,6 +141,13 @@ func spawn_bounce_particles(pos: Vector2, normal: Vector2) ->void:
 	get_tree().get_current_scene().add_child(instance)
 	instance.global_position = pos
 	instance.rotation = normal.angle()
+	
+func spawn_bump_particles(pos: Vector2, normal: Vector2) ->void:
+	var instance = bump_particles_scene.instantiate()
+	get_tree().get_current_scene().add_child(instance)
+	instance.global_position = pos
+	instance.rotation = normal.angle()
+
 
 func attract(global_position) -> void:
 	attracted = true
