@@ -19,3 +19,6 @@ pretty simple all in all
 use animation players to call them( keyframe enabled ) 
 alternatively call them from scripts
 todo: prodivide examples
+
+### animation player
+### hit stop
