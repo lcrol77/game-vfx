@@ -176,6 +176,10 @@ func stop_hitstop() -> void:
 	animation_player.play()
 	hitstop_frames = 0
 
+func appear() -> void:
+	animation_player.play("RESET")
+	animation_player.play("appear")
+
 func attract(global_position) -> void:
 	attracted = true
 	attracted_to = global_position
