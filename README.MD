@@ -22,3 +22,6 @@ todo: prodivide examples
 
 ### animation player
 ### hit stop
+### trail
+using a 3rd party trail 2D library to make this easy
+### lerping 
