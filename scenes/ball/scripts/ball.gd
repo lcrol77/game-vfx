@@ -5,6 +5,7 @@ signal hit_block(block)
 @export var bump_timing_scene: PackedScene = preload("res://scenes/effects/bump/bump_timing.tscn")
 @export var bounce_particles_scene: PackedScene = preload("res://scenes/ball/bounce_particles.tscn")
 @export var bump_particles_scene: PackedScene = preload("res://scenes/ball/bump_particles.tscn")
+@export var explode_particles_scene: PackedScene = preload("res://scenes/ball/ball_explode_particles.tscn")
 
 @export var speed: float = 400.0
 @export var accel: float = 20.0
@@ -25,6 +26,7 @@ var attracted: bool = false
 var attracted_to = null
 var frames_since_paddle_collison: int = 0
 var max_bump_distance: float = 40.0
+var boost_factor_base: float = 1.15
 var boost_factor: float = 1.0
 var boost_factor_perfect: float = 1.3
 var boost_factor_late_early: float = 1.15
@@ -55,6 +57,8 @@ func _physics_process(delta: float) -> void:
 		return
 	$VelocityLine.rotation = velocity.angle()
 	frames_since_paddle_collison += 1
+	
+	velocity = lerp(velocity, velocity.limit_length(speed), deccel * delta)
 	
 	if attached_to:
 		global_position = attached_to.global_position
@@ -106,7 +110,7 @@ func _physics_process(delta: float) -> void:
 				velocity.x += collision.get_collider().velocity.x * 0.6
 				velocity = velocity.normalized()
 				velocity *= length_before_collison
-				velocity *= boost_factor
+				velocity *= (boost_factor + boost_factor_base)
 			else:
 				## Tilt the normal near the edge
 				# Calculate the distance between the collision point and the center of the paddle
@@ -167,6 +171,14 @@ func spawn_bump_particles(pos: Vector2, normal: Vector2) ->void:
 	get_tree().get_current_scene().add_child(instance)
 	instance.global_position = pos
 	instance.rotation = normal.angle()
+
+func spawn_explode_particles(pos: Vector2) ->void:
+	var instance = explode_particles_scene.instantiate()
+	get_tree().get_current_scene().add_child(instance)
+	instance.global_position = pos
+
+func die() -> void:
+	spawn_explode_particles(global_position)
 
 func start_hitstop(frames: int) -> void:
 	animation_player.pause()

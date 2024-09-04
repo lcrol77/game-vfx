@@ -132,7 +132,7 @@ func _on_DeathArea_body_entered(body: Node) -> void:
 	health = int(clamp(health, 0, 3))
 	
 	health_bar.set_health(health)
-	
+	body.die()
 	if health == 0:
 		paddle.game_over = true
 		show_game_over()
