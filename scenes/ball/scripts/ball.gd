@@ -9,12 +9,13 @@ signal hit_block(block)
 
 @export var speed: float = 400.0
 @export var accel: float = 20.0
-@export var deccel: float = 10.0
+@export var deccel: float = 3.0
 @export var max_normal_angle: float = 15.0
 @export var max_speed: float = 1600.0
 @export var steering_max_speed: float = 1200.0
 @export var steer_force = 110.0
 @export var steer_speed = 300.0
+@export var max_speed_color: Color
 
 
 var acceleration: Vector2 = Vector2.ZERO
@@ -46,7 +47,8 @@ var hitstop_bomb = 10
 func _ready() -> void:
 	randomize()
 
-func _process(delta): 
+func _process(delta):
+	color_based_on_velocity()
 	scale_based_on_velocity()
 
 func _physics_process(delta: float) -> void:
@@ -117,13 +119,13 @@ func _physics_process(delta: float) -> void:
 				var distance = collision.get_position() - collision.get_collider().global_position
 				var amount = distance.x/96.0
 				normal = normal.rotated(deg_to_rad(max_normal_angle)*amount)
-				velocity = velocity.bounce(normal)*boost_factor
+				velocity = velocity.bounce(normal)*(boost_factor + boost_factor_base)
 		else:
 #			print("HIT SIDE: ", Globals.stats["ball_bounces"])
 			# Check if below half of the thickness
 			if collision.get_position().y > collision.get_collider().global_position.y:
 #				print("BELOW HALF")
-				velocity = velocity.bounce(normal)*boost_factor
+				velocity = velocity.bounce(normal)*(boost_factor + boost_factor_base)
 			else:
 				# Lateral normal respecting the sign checked the collision
 				normal = Vector2(sign(normal.x), 0)
@@ -132,7 +134,7 @@ func _physics_process(delta: float) -> void:
 				
 				# Create the new velocity using the velocity length and the normal direction
 				velocity = normal_rotated * velocity.length()
-				velocity *= boost_factor
+				velocity *= (boost_factor + boost_factor_base)
 		# Reset bump boost
 		boost_factor = 1.0
 	elif collision.get_collider().is_in_group("Bricks"):
@@ -159,6 +161,11 @@ func scale_based_on_velocity() -> void:
 	if animation_player.is_playing(): return
 	sprite.scale = lerp(sprite_base_scale, sprite_base_scale * Vector2(1.4, 0.5), velocity.length() / max_speed)
 	sprite.rotation = velocity.angle()
+
+func color_based_on_velocity() -> void:
+	var val = remap(velocity.length(), speed, max_speed,0,1.0)
+	sprite.self_modulate = lerp(Color.WHITE, max_speed_color, val)
+	$Trail2D.self_modulate = lerp(Color.WHITE, max_speed_color, val)
 	
 func spawn_bounce_particles(pos: Vector2, normal: Vector2) ->void:
 	var instance = bounce_particles_scene.instantiate()

@@ -145,6 +145,7 @@ color_ramp = SubResource("GradientTexture1D_frpoy")
 [node name="Ball" type="CharacterBody2D" groups=["Ball"]]
 script = ExtResource("2")
 speed = 700.0
+max_speed_color = Color(1, 0, 0.203922, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.375, 0.375)
