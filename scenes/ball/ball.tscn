@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cvg0cmgxvdkk0"]
+[gd_scene load_steps=22 format=3 uid="uid://cvg0cmgxvdkk0"]
 
 [ext_resource type="Texture2D" uid="uid://doqriorw2lonx" path="res://scenes/ball/visuals/ball.png" id="1"]
 [ext_resource type="Script" path="res://scenes/ball/scripts/ball.gd" id="2"]
@@ -142,6 +142,32 @@ scale_max = 0.19
 scale_curve = SubResource("CurveTexture_ccodm")
 color_ramp = SubResource("GradientTexture1D_frpoy")
 
+[sub_resource type="Gradient" id="Gradient_ika62"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8n68q"]
+gradient = SubResource("Gradient_ika62")
+
+[sub_resource type="Curve" id="Curve_58g8j"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.106218, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.624502), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_y23e5"]
+curve = SubResource("Curve_58g8j")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4226x"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 12.0
+spread = 180.0
+initial_velocity_min = 18.0
+initial_velocity_max = 22.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.07
+scale_max = 0.16
+scale_curve = SubResource("CurveTexture_y23e5")
+color_ramp = SubResource("GradientTexture1D_8n68q")
+
 [node name="Ball" type="CharacterBody2D" groups=["Ball"]]
 script = ExtResource("2")
 speed = 700.0
@@ -183,3 +209,9 @@ lifetime = 1.5
 one_shot = true
 speed_scale = 1.6
 explosiveness = 0.75
+
+[node name="SpeedParticles" type="GPUParticles2D" parent="."]
+amount = 51
+process_material = SubResource("ParticleProcessMaterial_4226x")
+texture = ExtResource("1")
+lifetime = 0.7

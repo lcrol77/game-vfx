@@ -16,6 +16,7 @@ signal hit_block(block)
 @export var steer_force = 110.0
 @export var steer_speed = 300.0
 @export var max_speed_color: Color
+@export var speed_threshold: float = 400
 
 
 var acceleration: Vector2 = Vector2.ZERO
@@ -166,7 +167,11 @@ func color_based_on_velocity() -> void:
 	var val = remap(velocity.length(), speed, max_speed,0,1.0)
 	sprite.self_modulate = lerp(Color.WHITE, max_speed_color, val)
 	$Trail2D.self_modulate = lerp(Color.WHITE, max_speed_color, val)
-	
+	$SpeedParticles.self_modulate = lerp(Color.WHITE, max_speed_color, val)
+	if velocity.length() > speed + speed_threshold and not $SpeedParticles.emitting:
+		$SpeedParticles.emitting = true
+	else:
+		$SpeedParticles.emitting = false
 func spawn_bounce_particles(pos: Vector2, normal: Vector2) ->void:
 	var instance = bounce_particles_scene.instantiate()
 	get_tree().get_current_scene().add_child(instance)
