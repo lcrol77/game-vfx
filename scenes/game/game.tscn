@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c1cvnrsabg3s1"]
+[gd_scene load_steps=18 format=3 uid="uid://c1cvnrsabg3s1"]
 
 [ext_resource type="PackedScene" uid="uid://dyy7lp07carkr" path="res://scenes/paddle/paddle.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://cvg0cmgxvdkk0" path="res://scenes/ball/ball.tscn" id="2"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://cca2cimj26xys" path="res://scenes/game/visuals/walls.png" id="7"]
 [ext_resource type="Texture2D" uid="uid://dds87jvstluyg" path="res://scenes/game/visuals/background.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://sh7g4gfmqe73" path="res://scenes/game/visuals/pattern.png" id="9"]
+[ext_resource type="Script" path="res://scenes/game/scripts/camera.gd" id="9_nkk84"]
 [ext_resource type="PackedScene" uid="uid://cn3a4bs7x53tq" path="res://scenes/ui/score/score.tscn" id="10_lkj00"]
 
 [sub_resource type="Shader" id="6"]
@@ -224,6 +225,7 @@ position = Vector2(960, 990)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(960, 540)
+script = ExtResource("9_nkk84")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

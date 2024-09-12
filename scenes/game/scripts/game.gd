@@ -15,6 +15,7 @@ extends Node2D
 @onready var brick_container: Node = $Bricks
 @onready var combo_timer: Timer = $ComboTimer
 @onready var combo_lbl = $Combo
+@onready var camera: Camera2D = $Camera2D
 
 var health: int = 3
 var energy: float = 0.0
@@ -31,7 +32,7 @@ func _ready() -> void:
 	randomize()
 	
 	hide_combo()
-	
+	Globals.camera = camera
 	ball.attached_to = paddle.launch_point
 	paddle.ball_attached = ball
 	paddle.ball = ball

@@ -54,4 +54,3 @@ func shake(duration, frequency, amplitude):
 	# Reset previous offset, if any.
 	set_offset(get_offset() - _last_offset)
 	_last_offset = Vector2(0, 0)
-
