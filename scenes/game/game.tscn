@@ -229,9 +229,10 @@ script = ExtResource("9_i5b0s")
 dynamic_enabled = true
 dynamic_factor = 0.3
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="HudCanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
 
-[node name="EnergyBar" parent="CanvasLayer" instance=ExtResource("5")]
+[node name="EnergyBar" parent="HudCanvasLayer" instance=ExtResource("5")]
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
@@ -244,7 +245,7 @@ offset_bottom = 128.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="HealthBar" parent="CanvasLayer" instance=ExtResource("6")]
+[node name="HealthBar" parent="HudCanvasLayer" instance=ExtResource("6")]
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
@@ -254,7 +255,7 @@ offset_right = 87.0
 offset_bottom = 128.0
 grow_vertical = 2
 
-[node name="Score" parent="CanvasLayer" instance=ExtResource("10_lkj00")]
+[node name="Score" parent="HudCanvasLayer" instance=ExtResource("10_lkj00")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -263,6 +264,8 @@ offset_top = -14.0
 offset_right = 178.5
 offset_bottom = 98.0
 grow_horizontal = 2
+
+[node name="UICanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="ComboTimer" type="Timer" parent="."]
 one_shot = true

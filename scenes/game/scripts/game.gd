@@ -8,14 +8,16 @@ extends Node2D
 
 @onready var paddle: CharacterBody2D = $Paddle
 @onready var ball: CharacterBody2D = $Ball
-@onready var energy_bar: Control = $CanvasLayer/EnergyBar
-@onready var health_bar: Control = $CanvasLayer/HealthBar
-@onready var score_ui = $CanvasLayer/Score
+@onready var energy_bar: Control = $HudCanvasLayer/EnergyBar
+@onready var health_bar: Control = $HudCanvasLayer/HealthBar
+@onready var score_ui = $HudCanvasLayer/Score
 @onready var spawn_pos_container: Node = $SpawnPos
 @onready var brick_container: Node = $Bricks
 @onready var combo_timer: Timer = $ComboTimer
 @onready var combo_lbl = $Combo
 @onready var camera: Camera2D = $Camera2D
+@onready var hud_canvas_layer: CanvasLayer = $HudCanvasLayer
+@onready var ui_canvas_layer: CanvasLayer = $UICanvasLayer
 
 var health: int = 3
 var energy: float = 0.0
@@ -144,12 +146,12 @@ func _on_DeathArea_body_entered(body: Node) -> void:
 	
 func show_game_over() -> void:
 	var instance = game_over_scene.instantiate()
-	$CanvasLayer.add_child(instance)
+	ui_canvas_layer.add_child(instance)
 	instance.retry.connect(on_game_over_retry)
 	
 func show_stage_clear() -> void:
 	var instance = stage_clear_scene.instantiate()
-	$CanvasLayer.add_child(instance)
+	ui_canvas_layer.add_child(instance)
 	instance.next.connect(on_stage_clear_next)
 
 func _on_ball_hit_block(block) -> void:
