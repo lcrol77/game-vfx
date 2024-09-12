@@ -33,6 +33,7 @@ func _ready() -> void:
 	
 	hide_combo()
 	Globals.camera = camera
+	Globals.camera.objects = [ball]
 	ball.attached_to = paddle.launch_point
 	paddle.ball_attached = ball
 	paddle.ball = ball
